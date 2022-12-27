@@ -7,6 +7,7 @@ public class HeroControler : MonoBehaviour
 {
     NavMeshAgent agent;
     Animator anim;
+    HeroInventory heroInventory;
     public float spead;
     public float distans;
     public Vector3 target;
@@ -15,6 +16,7 @@ public class HeroControler : MonoBehaviour
     {
         agent =GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
+        heroInventory=GetComponent<HeroInventory>();
     }
     void Update()
     {
@@ -41,6 +43,10 @@ public class HeroControler : MonoBehaviour
             target=_hit.point;
             act="Move";
         }
+        else if(_hit.transform.tag=="Item")
+        {
+            TakeItem(_hit);
+        }
     }
     void Move()
     {
@@ -63,6 +69,19 @@ public class HeroControler : MonoBehaviour
                 agent.isStopped=true;
                 act="";
             }
+        }
+    }
+    void TakeItem(RaycastHit _item)
+    {
+        distans=Vector3.Distance(transform.position+transform.up,_item.transform.position);
+        if(distans<4)
+        {
+            heroInventory.item.Add(_item.transform.GetComponent<Item>());
+            Destroy(_item.transform.gameObject);
+        }
+        else
+        {
+            print("Далеко");
         }
     }
 }
